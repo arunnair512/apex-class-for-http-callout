@@ -1,8 +1,8 @@
 public class TestRaccoonOrgCallOut {
-    private string cKey = '3MVG9Kip4IKAZQEWZx4CjQ4glE8o6yz_JUU8s.CU_INM0y8C9QXvxL34bIc8DZQdu3DYKSuXJX.eK9sz6ZjfV';
-    private string cSecret = '3DA02B9D575AE38D86E73343523E48C650EBCE64DBE66CE74279CCE869E1A545';
-    private string uName = 'arun.kumar@resilient-raccoon-8ty662.com';
-    private string passwd = 'welcome@1236vN6pAD1ThTIe5E1HW5qX5dy8';
+    private string cKey = 'XXXXXXXXXXXXXXX.YYYYYYYYYYYYYY.ZZZZZZZZZZZ';
+    private string cSecret = '0000000000000000000000000000';
+    private string uName = 'abc.efg@myinstance.com';
+    private string passwd = 'password+securitytoken';
     public static list < resultWrapper > listWrap {
         get;
         set;
@@ -21,7 +21,7 @@ public class TestRaccoonOrgCallOut {
         HttpRequest req = new HttpRequest();
         req.setBody(reqBody);
         req.setMethod('POST');
-        req.setEndpoint('https://resilient-raccoon-8ty662-dev-ed.my.salesforce.com/services/oauth2/token');
+        req.setEndpoint('https://yourinstance.salesforce.com/services/oauth2/token');
         HttpResponse hresp = h.send(req);
         responseWrapper wResp = (responseWrapper) JSON.deserialize(hresp.getBody(), responseWrapper.class);
         system.debug('Instance url' + wResp.instance_url);
@@ -33,9 +33,8 @@ public class TestRaccoonOrgCallOut {
         String accToken;
         string responseBody;
         string externalAccId = '0013h00000BbgouAAB'; // Id of account from SYSTEM B
-        string endPoint ='https://resilient-raccoon-8ty662-dev-ed.my.salesforce.com/services/data/v39.0/query/?q=SELECT+Id,Name+FROM+Account+limit+1';
+        string endPoint ='https://yourinstance.com/services/data/v39.0/query/?q=SELECT+Id,Name+FROM+Account+limit+1';
        
-        //string endPoint = 'https://resilient-raccoon-8ty662-dev-ed.my.salesforce.com/services/apexrest/Account/' + externalAccId;
         TestRaccoonOrgCallOut obj = new TestRaccoonOrgCallOut();
         accToken = obj.getRequestToken();
         system.debug('access token' + accToken);
