@@ -1,0 +1,67 @@
+public class TestRaccoonOrgCallOut {
+    private string cKey = '3MVG9Kip4IKAZQEWZx4CjQ4glE8o6yz_JUU8s.CU_INM0y8C9QXvxL34bIc8DZQdu3DYKSuXJX.eK9sz6ZjfV';
+    private string cSecret = '3DA02B9D575AE38D86E73343523E48C650EBCE64DBE66CE74279CCE869E1A545';
+    private string uName = 'arun.kumar@resilient-raccoon-8ty662.com';
+    private string passwd = 'welcome@1236vN6pAD1ThTIe5E1HW5qX5dy8';
+    public static list < resultWrapper > listWrap {
+        get;
+        set;
+    }
+    public testRaccoonOrgCallOut() {
+        listWrap = new list < resultWrapper > ();
+    }
+    public class responseWrapper {
+        public string id;
+        public string access_token;
+        public string instance_url;
+    }
+    public string getRequestToken() {
+        string reqBody = 'grant_type=password&client_id=' + cKey + '&client_secret=' + cSecret + '&username=' + uName + '&password=' + passwd;
+        Http h = new Http();
+        HttpRequest req = new HttpRequest();
+        req.setBody(reqBody);
+        req.setMethod('POST');
+        req.setEndpoint('https://resilient-raccoon-8ty662-dev-ed.my.salesforce.com/services/oauth2/token');
+        HttpResponse hresp = h.send(req);
+        responseWrapper wResp = (responseWrapper) JSON.deserialize(hresp.getBody(), responseWrapper.class);
+        system.debug('Instance url' + wResp.instance_url);
+        system.debug('session id' + wResp.access_token);
+        return wResp.access_token;
+    }
+    public static void getConList() {
+        list < account > accList1 = new list < account > ();
+        String accToken;
+        string responseBody;
+        string externalAccId = '0013h00000BbgouAAB'; // Id of account from SYSTEM B
+        string endPoint ='https://resilient-raccoon-8ty662-dev-ed.my.salesforce.com/services/data/v39.0/query/?q=SELECT+Id,Name+FROM+Account+limit+1';
+       
+        //string endPoint = 'https://resilient-raccoon-8ty662-dev-ed.my.salesforce.com/services/apexrest/Account/' + externalAccId;
+        TestRaccoonOrgCallOut obj = new TestRaccoonOrgCallOut();
+        accToken = obj.getRequestToken();
+        system.debug('access token' + accToken);
+        if (accToken != '') {
+            Http h1 = new Http();
+            HttpRequest req1 = new HttpRequest();
+            req1.setHeader('Authorization', 'Bearer ' + accToken);
+            req1.setHeader('Content-Type', 'application/json');
+            //req1.setHeader('Accept','application/json');
+            req1.setMethod('GET');
+            req1.setEndpoint(endPoint);
+            HttpResponse hresp1 = h1.send(req1);
+            System.debug('response'+hresp1.getBody());
+            resultWrapper wResp1 = (resultWrapper) JSON.deserialize(hresp1.getBody(), resultWrapper.class);
+            listWrap.add(wResp1);
+             System.debug('wResp1'+listWrap[0]);
+        }
+    }
+    public class resultWrapper {
+        public string id {
+            get;
+            set;
+        }
+        public string name {
+            get;
+            set;
+        }
+    }
+}
